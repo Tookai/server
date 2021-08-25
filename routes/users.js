@@ -58,6 +58,22 @@ router.get("/all", async (req, res) => {
 });
 
 //
+// Select one user
+router.get("/:id", async (req, res) => {
+  try {
+    const user = await User.findAll({ where: { id: req.params.id } });
+    if (!user[0]) {
+      res.status(404).json("Cet utilisateur n'existe pas.");
+    }
+    if (user[0]) {
+      res.status(200).json(user);
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//
 //
 //
 module.exports = router;
