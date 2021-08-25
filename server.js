@@ -4,6 +4,9 @@ const cors = require("cors");
 // --------------------------------
 const userRoute = require("./routes/users");
 // --------------------------------
+const cors = require('cors');
+
+
 app.use(express.json());
 app.use(cors());
 //? --------------------------------
