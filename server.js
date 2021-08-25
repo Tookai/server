@@ -3,6 +3,7 @@ const app = express();
 const cors = require("cors");
 // ---------------------------------
 const userRoute = require("./routes/users");
+const postRoute = require("./routes/posts");
 // ---------------------------------
 // ---------------------------------
 
@@ -10,6 +11,8 @@ app.use(express.json());
 app.use(cors());
 //? --------------------------------
 app.use("/user", userRoute);
+//? --------------------------------
+app.use("/post", postRoute);
 //? --------------------------------
 
 //
