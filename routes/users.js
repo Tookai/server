@@ -106,15 +106,53 @@ router.put("/update/infos/:id", async (req, res) => {
 
 //
 // Update one user PICTURES
-//
-// Update one user INFOS
 router.put("/update/pictures/:id", async (req, res) => {
-    const user = req.body;
-    try {
+  const user = req.body;
+  try {
+    const updatedUser = await User.update(
+      {
+        avatar: user.avatar,
+        cover: user.cover,
+      },
+      {
+        where: {
+          id: req.params.id,
+        },
+      }
+    );
+    if (!updatedUser[0]) {
+      res.status(404).json("Cet utilisateur n'existe pas.");
+    }
+    if (updatedUser[0]) {
+      res.status(200).json(`L'utilisateur a été mis à jour.`);
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//
+// Update one user CREDENTIALS
+router.put("/update/credentials/:id", async (req, res) => {
+  const user = req.body;
+  const email = user.email;
+  const oldPw = user.oldPw;
+  const newPw = user.newPw;
+
+  try {
+    const u = await User.findAll({ where: { id: req.params.id } });
+    const validPw = await bcrypt.compare(oldPw, u[0].password);
+
+    if (!validPw) {
+      res.status(405).json("Le mot de passe est incorrect.");
+    }
+
+    if (validPw) {
+      const newHashedPw = await bcrypt.hash(newPw, 10);
       const updatedUser = await User.update(
         {
-          avatar: user.avatar,
-          cover: user.cover,
+          email: email || u[0].email,
+          password: newHashedPw || u[0].password,
         },
         {
           where: {
@@ -128,12 +166,11 @@ router.put("/update/pictures/:id", async (req, res) => {
       if (updatedUser[0]) {
         res.status(200).json(`L'utilisateur a été mis à jour.`);
       }
-    } catch (err) {
-      res.status(500).json(err);
     }
-  });
-
-
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
 //
 //
