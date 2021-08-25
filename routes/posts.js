@@ -35,8 +35,17 @@ router.get("/id/:id", async (req, res) => {
 
 router.get("/user/:userId", async (req, res) => {
   try {
-    const post = await Post.findAll({ where: { userId: req.params.userId } });
-    res.status(200).json(post);
+    const posts = await Post.findAll({ where: { userId: req.params.userId } });
+    res.status(200).json(posts);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.get("/topic/:topic", async (req, res) => {
+  try {
+    const posts = await Post.findAll({ where: { topic: req.params.topic } });
+    res.status(200).json(posts);
   } catch (err) {
     res.status(500).json(err);
   }
