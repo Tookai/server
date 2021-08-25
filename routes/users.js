@@ -27,11 +27,31 @@ router.post("/login", async (req, res) => {
   const password = user.password;
   try {
     const user = await User.findAll({
-      where: {
-        email: email,
-      },
+      where: { email },
     });
-    res.status(200).json(user);
+    if (!user[0]) {
+      res.status(404).json("Cet utilisateur n'existe pas");
+    }
+    if (user[0]) {
+      const validPw = await bcrypt.compare(password, user[0].password);
+      if (!validPw) {
+        res.status(405).json("Mauvaise combinaison utilisateur / mot de passe.");
+      }
+      if (validPw) {
+        res.status(200).json(user[0]);
+      }
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//
+// Select all users
+router.get("/all", async (req, res) => {
+  try {
+    const users = await User.findAll();
+    res.status(200).json(users);
   } catch (err) {
     res.status(500).json(err);
   }
