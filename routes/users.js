@@ -19,7 +19,23 @@ router.post("/register", async (req, res) => {
   }
 });
 
-
+//
+// Login a user
+router.post("/login", async (req, res) => {
+  const user = req.body;
+  const email = user.email;
+  const password = user.password;
+  try {
+    const user = await User.findAll({
+      where: {
+        email: email,
+      },
+    });
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
 //
 //
