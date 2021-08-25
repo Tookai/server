@@ -26,9 +26,7 @@ router.post("/login", async (req, res) => {
   const email = user.email;
   const password = user.password;
   try {
-    const user = await User.findAll({
-      where: { email },
-    });
+    const user = await User.findAll({ where: { email } });
     if (!user[0]) {
       res.status(404).json("Cet utilisateur n'existe pas");
     }
@@ -38,7 +36,7 @@ router.post("/login", async (req, res) => {
         res.status(405).json("Mauvaise combinaison utilisateur / mot de passe.");
       }
       if (validPw) {
-        res.status(200).json(user[0]);
+        res.status(200).json(user);
       }
     }
   } catch (err) {
@@ -67,6 +65,39 @@ router.get("/:id", async (req, res) => {
     }
     if (user[0]) {
       res.status(200).json(user);
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//
+// Update one user
+router.put("/update/infos/:id", async (req, res) => {
+  const user = req.body;
+  try {
+    const updatedUser = await User.update(
+      {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        birthday: user.birthday,
+        city: user.city,
+        fromCity: user.fromCity,
+        relationship: user.relationship,
+        scholarship: user.scholarship,
+        job: user.job,
+      },
+      {
+        where: {
+          id: req.params.id,
+        },
+      }
+    );
+    if (!updatedUser[0]) {
+      res.status(404).json("Cet utilisateur n'existe pas.");
+    }
+    if (updatedUser[0]) {
+      res.status(200).json(`L'utilisateur a été mis à jour.`);
     }
   } catch (err) {
     res.status(500).json(err);
