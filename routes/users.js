@@ -173,6 +173,17 @@ router.put("/update/credentials/:id", async (req, res) => {
 });
 
 //
+// Delete one user
+router.delete("/delete/:id", async (req, res) => {
+  try {
+    await User.destroy({ where: { id: req.params.id } });
+    res.status(200).json("L'utilisateur a été supprimé.");
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//
 //
 //
 module.exports = router;
