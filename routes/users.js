@@ -72,7 +72,7 @@ router.get("/:id", async (req, res) => {
 });
 
 //
-// Update one user
+// Update one user INFOS
 router.put("/update/infos/:id", async (req, res) => {
   const user = req.body;
   try {
@@ -103,6 +103,37 @@ router.put("/update/infos/:id", async (req, res) => {
     res.status(500).json(err);
   }
 });
+
+//
+// Update one user PICTURES
+//
+// Update one user INFOS
+router.put("/update/pictures/:id", async (req, res) => {
+    const user = req.body;
+    try {
+      const updatedUser = await User.update(
+        {
+          avatar: user.avatar,
+          cover: user.cover,
+        },
+        {
+          where: {
+            id: req.params.id,
+          },
+        }
+      );
+      if (!updatedUser[0]) {
+        res.status(404).json("Cet utilisateur n'existe pas.");
+      }
+      if (updatedUser[0]) {
+        res.status(200).json(`L'utilisateur a été mis à jour.`);
+      }
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  });
+
+
 
 //
 //
