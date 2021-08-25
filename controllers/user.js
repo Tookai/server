@@ -1,0 +1,167 @@
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { User } = require("../models");
+
+exports.createUser = async (req, res) => {
+  const user = req.body;
+  const firstName = user.firstName;
+  const lastName = user.lastName;
+  const email = user.email;
+  const hashedPw = await bcrypt.hash(user.password, 10);
+  try {
+    const newUser = await User.create({ firstName, lastName, email, password: hashedPw });
+    res.status(200).json(newUser);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+exports.loginUser = async (req, res) => {
+  const user = req.body;
+  const email = user.email;
+  const password = user.password;
+  try {
+    const user = await User.findAll({ where: { email } });
+    if (!user[0]) {
+      res.status(404).json("Cet utilisateur n'existe pas");
+    }
+    if (user[0]) {
+      const validPw = await bcrypt.compare(password, user[0].password);
+      if (!validPw) {
+        res.status(405).json("Mauvaise combinaison utilisateur / mot de passe.");
+      }
+      if (validPw) {
+        res.status(200).json(user);
+      }
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+exports.selectAllUsers = async (req, res) => {
+  try {
+    const users = await User.findAll();
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+exports.selectOneUser = async (req, res) => {
+  try {
+    const user = await User.findAll({ where: { id: req.params.id } });
+    if (!user[0]) {
+      res.status(404).json("Cet utilisateur n'existe pas.");
+    }
+    if (user[0]) {
+      res.status(200).json(user);
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+exports.updateUserInfos = async (req, res) => {
+  const user = req.body;
+  try {
+    const updatedUser = await User.update(
+      {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        birthday: user.birthday,
+        city: user.city,
+        fromCity: user.fromCity,
+        relationship: user.relationship,
+        scholarship: user.scholarship,
+        job: user.job,
+      },
+      {
+        where: {
+          id: req.params.id,
+        },
+      }
+    );
+    if (!updatedUser[0]) {
+      res.status(404).json("Cet utilisateur n'existe pas.");
+    }
+    if (updatedUser[0]) {
+      res.status(200).json(`L'utilisateur a été mis à jour.`);
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+exports.updateUserPictures = async (req, res) => {
+  const user = req.body;
+  try {
+    const updatedUser = await User.update(
+      {
+        avatar: user.avatar,
+        cover: user.cover,
+      },
+      {
+        where: {
+          id: req.params.id,
+        },
+      }
+    );
+    if (!updatedUser[0]) {
+      res.status(404).json("Cet utilisateur n'existe pas.");
+    }
+    if (updatedUser[0]) {
+      res.status(200).json(`L'utilisateur a été mis à jour.`);
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+exports.updateUserCredentials = async (req, res) => {
+  const user = req.body;
+  const email = user.email;
+  const oldPw = user.oldPw;
+  const newPw = user.newPw;
+
+  try {
+    const u = await User.findAll({ where: { id: req.params.id } });
+    const validPw = await bcrypt.compare(oldPw, u[0].password);
+
+    if (!validPw) {
+      res.status(405).json("Le mot de passe est incorrect.");
+    }
+
+    if (validPw) {
+      const newHashedPw = await bcrypt.hash(newPw, 10);
+      const updatedUser = await User.update(
+        {
+          email: email || u[0].email,
+          password: newHashedPw || u[0].password,
+        },
+        {
+          where: {
+            id: req.params.id,
+          },
+        }
+      );
+      if (!updatedUser[0]) {
+        res.status(404).json("Cet utilisateur n'existe pas.");
+      }
+      if (updatedUser[0]) {
+        res.status(200).json(`L'utilisateur a été mis à jour.`);
+      }
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  try {
+    await User.destroy({ where: { id: req.params.id } });
+    res.status(200).json("L'utilisateur a été supprimé.");
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
