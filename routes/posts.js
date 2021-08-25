@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const { Post } = require("../models");
 
+//
+// Create a new post
 router.post("/post", async (req, res) => {
   const post = req.body;
   const userId = post.userId;
@@ -15,6 +17,8 @@ router.post("/post", async (req, res) => {
   }
 });
 
+//
+// Select all posts
 router.get("/all", async (req, res) => {
   try {
     const posts = await Post.findAll();
@@ -24,6 +28,8 @@ router.get("/all", async (req, res) => {
   }
 });
 
+//
+// Select one post
 router.get("/id/:id", async (req, res) => {
   try {
     const post = await Post.findAll({ where: { id: req.params.id } });
@@ -33,6 +39,8 @@ router.get("/id/:id", async (req, res) => {
   }
 });
 
+//
+// Select all posts by user
 router.get("/user/:userId", async (req, res) => {
   try {
     const posts = await Post.findAll({ where: { userId: req.params.userId } });
@@ -42,6 +50,8 @@ router.get("/user/:userId", async (req, res) => {
   }
 });
 
+//
+// Select all posts by topic
 router.get("/topic/:topic", async (req, res) => {
   try {
     const posts = await Post.findAll({ where: { topic: req.params.topic } });
@@ -51,6 +61,8 @@ router.get("/topic/:topic", async (req, res) => {
   }
 });
 
+//
+// Update one post
 router.put("/update/:id", async (req, res) => {
   const p = req.body;
   const desc = p.desc;
@@ -73,6 +85,8 @@ router.put("/update/:id", async (req, res) => {
   }
 });
 
+//
+// Delete one post
 router.delete("/delete/:id", async (req, res) => {
   try {
     await Post.destroy({ where: { id: req.params.id } });
