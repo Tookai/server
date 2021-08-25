@@ -2,6 +2,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { User } = require("../models");
 
+//
+// Create a new user
 exports.createUser = async (req, res) => {
   const user = req.body;
   const firstName = user.firstName;
@@ -16,6 +18,8 @@ exports.createUser = async (req, res) => {
   }
 };
 
+//
+// Login a user
 exports.loginUser = async (req, res) => {
   const user = req.body;
   const email = user.email;
@@ -39,6 +43,8 @@ exports.loginUser = async (req, res) => {
   }
 };
 
+//
+// Select all users
 exports.selectAllUsers = async (req, res) => {
   try {
     const users = await User.findAll();
@@ -48,6 +54,8 @@ exports.selectAllUsers = async (req, res) => {
   }
 };
 
+//
+// Select one user
 exports.selectOneUser = async (req, res) => {
   try {
     const user = await User.findAll({ where: { id: req.params.id } });
@@ -62,6 +70,8 @@ exports.selectOneUser = async (req, res) => {
   }
 };
 
+//
+// Update one user INFOS
 exports.updateUserInfos = async (req, res) => {
   const user = req.body;
   try {
@@ -93,6 +103,8 @@ exports.updateUserInfos = async (req, res) => {
   }
 };
 
+//
+// Update one user PICTURES
 exports.updateUserPictures = async (req, res) => {
   const user = req.body;
   try {
@@ -118,6 +130,8 @@ exports.updateUserPictures = async (req, res) => {
   }
 };
 
+//
+// Update one user CREDENTIALS
 exports.updateUserCredentials = async (req, res) => {
   const user = req.body;
   const email = user.email;
@@ -157,6 +171,8 @@ exports.updateUserCredentials = async (req, res) => {
   }
 };
 
+//
+// Delete one user
 exports.deleteUser = async (req, res) => {
   try {
     await User.destroy({ where: { id: req.params.id } });
