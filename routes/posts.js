@@ -8,7 +8,7 @@ router.post("/post", postCtrl.createPost);
 
 //
 // Select all posts
-router.get("/all", postCtrl.selectAll);
+router.get("/", postCtrl.selectAll);
 
 //
 // Select one post

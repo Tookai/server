@@ -10,16 +10,16 @@ const postRoute = require("./routes/posts");
 app.use(express.json());
 app.use(cors());
 //? --------------------------------
-app.use("/user", userRoute);
+app.use("/api/user", userRoute);
 //? --------------------------------
-app.use("/post", postRoute);
+app.use("/api/post", postRoute);
 //? --------------------------------
 
 //
 //
 //
 const models = require("./models");
-models.sequelize.sync().then((req) => {
+models.sequelize.sync().then(() => {
   app.listen(5500, () => {
     console.log("===> Backend server is running! <===");
   });
