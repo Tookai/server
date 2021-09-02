@@ -106,7 +106,9 @@ exports.updateUserInfos = async (req, res) => {
 //
 // Update one user PICTURES
 exports.updateUserPictures = async (req, res) => {
+  console.log(req, "req");
   const user = req.body;
+  console.log(user, "user");
   try {
     const updatedUser = await User.update(
       {
@@ -148,10 +150,10 @@ exports.updateUserCredentials = async (req, res) => {
 
     if (validPw) {
       const newHashedPw = await bcrypt.hash(newPw, 10);
-      const updatedUser = await User.update(
+      await User.update(
         {
-          email: email || u[0].email,
-          password: newHashedPw || u[0].password,
+          email: email !== null ? email : u[0].email,
+          password: newPw !== null ? newHashedPw : u[0].password,
         },
         {
           where: {
@@ -159,12 +161,7 @@ exports.updateUserCredentials = async (req, res) => {
           },
         }
       );
-      if (!updatedUser[0]) {
-        res.status(404).json("Cet utilisateur n'existe pas.");
-      }
-      if (updatedUser[0]) {
-        res.status(200).json(`L'utilisateur a été mis à jour.`);
-      }
+      res.status(200).json("Mise a jour effectuée.");
     }
   } catch (err) {
     res.status(500).json(err);
