@@ -5,6 +5,7 @@ const cors = require("cors");
 const userRoute = require("./routes/users");
 const postRoute = require("./routes/posts");
 const likeRoute = require("./routes/likes");
+const commentRoute = require("./routes/comments");
 // ---------------------------------
 // ---------------------------------
 
@@ -17,6 +18,7 @@ app.use("/api/post", postRoute);
 //? --------------------------------
 app.use('/api/like', likeRoute)
 //? --------------------------------
+app.use('/api/comment', commentRoute)
 //? --------------------------------
 
 //

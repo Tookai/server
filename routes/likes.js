@@ -8,10 +8,9 @@ const likeCtrl = require("../controllers/like");
 
 //
 // Add one like
-router.post("/like", async (req, res) => {
-  const b = req.body;
-  const postId = b.postId;
-  const userId = b.userId;
+router.post("/:postId/like/:userId", async (req, res) => {
+  const postId = req.params.postId;
+  const userId = req.params.userId;
   try {
     await Like.create({ postId, userId });
     await Post.increment({ likes: +1 }, { where: { id: postId } });
@@ -23,10 +22,9 @@ router.post("/like", async (req, res) => {
 
 //
 // Remove one like
-router.delete("/dislike", async (req, res) => {
-  const b = req.body;
-  const postId = b.postId;
-  const userId = b.userId;
+router.delete("/:postId/dislike/:userId", async (req, res) => {
+  const postId = req.params.postId;
+  const userId = req.params.userId;
   try {
     await Like.destroy({ where: { postId, userId } });
     await Post.increment({ likes: -1 }, { where: { id: postId } });
@@ -38,16 +36,12 @@ router.delete("/dislike", async (req, res) => {
 
 //
 // Select like by post and return who liked
-router.get("/who", async (req, res) => {
+router.get("/:postId/who", async (req, res) => {
   try {
-    const likes = await Like.findAll({ where: { postId: req.body.postId } });
-    if (likes.length > 0) {
-      const userId = likes.map((u) => u.userId);
-      const user = await User.findAll({ where: { id: userId } });
-      res.status(200).json(user);
-    } else {
-      res.status(200).json("Aucun like pour le moment.");
-    }
+    const likes = await Like.findAll({ where: { postId: req.params.postId } });
+    const userId = likes.map((u) => u.userId);
+    const user = await User.findAll({ where: { id: userId } });
+    res.status(200).json(user);
   } catch (err) {
     res.status(500).json(err);
   }
