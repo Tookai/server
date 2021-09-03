@@ -35,13 +35,18 @@ exports.loginUser = async (req, res) => {
         res.status(405).json("Mauvaise combinaison utilisateur / mot de passe.");
       }
       if (validPw) {
-        res.status(200).json(user);
+        res.status(200).json({
+          user,
+          token: jwt.sign({ userId: user[0].id, isAdmin: user[0].isAdmin }, "Super_Secret_Key", { expiresIn: "3h" }),
+        });
       }
     }
   } catch (err) {
     res.status(500).json(err);
   }
 };
+
+// { user, token: jwt.sign({ userId: user.id, isAdmin: user.isAdmin }, "Super_Secret_Key", { expiresIn: "3h" }) }
 
 //
 // Select all users
