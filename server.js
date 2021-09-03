@@ -12,6 +12,7 @@ const auth = require("./middlewares/auth");
 
 app.use(express.json());
 app.use(cors());
+app.use(helmet());
 //? --------------------------------
 app.use("/api/user", userRoute);
 //? --------------------------------
