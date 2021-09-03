@@ -1,4 +1,4 @@
-const { Post } = require("../models");
+const { Post, Like, Comment } = require("../models");
 
 //
 // Create a new post
@@ -89,6 +89,8 @@ exports.updateOne = async (req, res) => {
 exports.deleteOne = async (req, res) => {
   try {
     await Post.destroy({ where: { id: req.params.id } });
+    await Like.destroy({ where: { postId: req.params.id } });
+    await Comment.destroy({ where: { postId: req.params.id } });
     res.status(200).json("Le post a été supprimé.");
   } catch (err) {
     res.status(500).json(err);
