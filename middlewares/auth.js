@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 module.exports = (req, res, next) => {
   const token = req.headers.authorization.split(" ")[1];
   if (token) {
-    jwt.verify(token, "Super_Secret_Key", (err, user) => {
+    jwt.verify(token, process.env.JWT_KEY, (err, user) => {
       if (err) res.status(403).json("Le token est invalide.");
 
       req.user = user;

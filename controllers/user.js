@@ -37,7 +37,7 @@ exports.loginUser = async (req, res) => {
       if (validPw) {
         res.status(200).json({
           user,
-          token: jwt.sign({ userId: user[0].id, isAdmin: user[0].isAdmin }, "Super_Secret_Key", { expiresIn: "3h" }),
+          token: jwt.sign({ userId: user[0].id, isAdmin: user[0].isAdmin }, process.env.JWT_KEY, { expiresIn: "3h" }),
         });
       }
     }
