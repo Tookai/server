@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const helmet = require("helmet");
+const path = require("path");
 const dotenv = require("dotenv");
 // ---------------------------------
 const userRoute = require("./routes/users");
@@ -27,6 +28,8 @@ app.use("/api/comment", commentRoute);
 //? --------------------------------
 
 //
+// gestionnaire de routage
+app.use("/images", express.static(path.join(__dirname, "images")));
 //
 //
 const models = require("./models");

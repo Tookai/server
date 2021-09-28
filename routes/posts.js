@@ -1,10 +1,11 @@
 const router = require("express").Router();
+const multer = require("../middlewares/multer");
 
 const postCtrl = require("../controllers/post");
 
 //
 // Create a new post
-router.post("/post", postCtrl.createPost);
+router.post("/post", multer, postCtrl.createPost);
 
 //
 // Select all posts

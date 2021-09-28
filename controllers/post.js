@@ -9,8 +9,13 @@ exports.createPost = async (req, res) => {
   const image = post.image;
   const topic = post.topic;
   try {
-    const newPost = await Post.create({ userId, desc, image, topic });
-    res.status(200).json(newPost);
+    if (!req.file) {
+      const newPost = await Post.create({ userId, desc, image, topic });
+      res.status(200).json(newPost);
+    } else {
+      const newPost = await Post.create({ ...post, image: `${req.protocol}://${req.get("host")}/images/${req.file.filename}` });
+      res.status(200).json(newPost);
+    }
   } catch (err) {
     res.status(500).json(err);
   }
