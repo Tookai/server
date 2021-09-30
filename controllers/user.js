@@ -109,27 +109,70 @@ exports.updateUserInfos = async (req, res) => {
 };
 
 //
-// Update one user PICTURES
-exports.updateUserPictures = async (req, res) => {
-  console.log(req, "req");
-  const user = req.body;
-  console.log(user, "user");
+// Update one user AVATAR
+exports.updateUserAvatar = async (req, res) => {
+  console.log(req);
   try {
-    const updatedUser = await User.update(
-      {
-        avatar: user.avatar,
-        cover: user.cover,
-      },
-      {
-        where: {
-          id: req.params.id,
+    if (!req.file) {
+      const user = req.body;
+      await User.update(
+        {
+          avatar: user.avatarPic,
         },
-      }
-    );
-    if (!updatedUser[0]) {
-      res.status(404).json("Cet utilisateur n'existe pas.");
+        {
+          where: {
+            id: req.params.id,
+          },
+        }
+      );
+      res.status(200).json(`L'utilisateur a été mis à jour.`);
+    } else {
+      console.log(req);
+      await User.update(
+        {
+          avatar: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
+        },
+        {
+          where: {
+            id: req.params.id,
+          },
+        }
+      );
+      res.status(200).json(`L'utilisateur a été mis à jour.`);
     }
-    if (updatedUser[0]) {
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+//
+// Update one user COVER
+exports.updateUserCover = async (req, res) => {
+  const user = req.body;
+  try {
+    if (!req.file) {
+      await User.update(
+        {
+          cover: user.coverPic,
+        },
+        {
+          where: {
+            id: req.params.id,
+          },
+        }
+      );
+      res.status(200).json(`L'utilisateur a été mis à jour.`);
+    } else {
+      await User.update(
+        {
+          cover: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
+        },
+        {
+          where: {
+            id: req.params.id,
+          },
+        }
+      );
       res.status(200).json(`L'utilisateur a été mis à jour.`);
     }
   } catch (err) {

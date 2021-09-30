@@ -1,4 +1,5 @@
 const { Post, Like, Comment } = require("../models");
+const fs = require("fs");
 
 //
 // Create a new post
@@ -73,17 +74,30 @@ exports.updateOne = async (req, res) => {
   const image = p.image;
   const topic = p.topic;
   try {
-    await Post.update(
-      {
-        desc,
-        image,
-        topic,
-      },
-      {
-        where: { id: req.params.id },
-      }
-    );
-    res.status(200).json("Le post a été mis à jour.");
+    if (!req.file) {
+      await Post.update(
+        {
+          desc,
+          image,
+          topic,
+        },
+        {
+          where: { id: req.params.id },
+        }
+      );
+      res.status(200).json("Le post a été mis à jour.");
+    } else {
+      await Post.update(
+        {
+          ...p,
+          image: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
+        },
+        {
+          where: { id: req.params.id },
+        }
+      );
+      res.status(200).json("Le post a été mis à jour.");
+    }
   } catch (err) {
     res.status(500).json(err);
   }

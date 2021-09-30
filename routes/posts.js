@@ -25,7 +25,7 @@ router.get("/topic/:topic", postCtrl.selectByTopic);
 
 //
 // Update one post
-router.put("/update/:id", postCtrl.updateOne);
+router.put("/update/:id", multer, postCtrl.updateOne);
 
 //
 // Delete one post

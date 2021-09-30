@@ -1,4 +1,6 @@
 const router = require("express").Router();
+const multer = require("../middlewares/multer");
+
 // ---------------------------------------
 const userCtrl = require("../controllers/user");
 // ---------------------------------------
@@ -24,8 +26,12 @@ router.get("/:id", userCtrl.selectOneUser);
 router.put("/update/infos/:id", userCtrl.updateUserInfos);
 
 //
-// Update one user PICTURES
-router.put("/update/pictures/:id", userCtrl.updateUserPictures);
+// Update one user AVATAR
+router.put("/update/avatar/:id", multer, userCtrl.updateUserAvatar);
+
+//
+// Update one user COVER
+router.put("/update/cover/:id", multer, userCtrl.updateUserCover);
 
 //
 // Update one user CREDENTIALS
